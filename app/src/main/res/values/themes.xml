@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Primary color. -->
+        <item name="colorPrimary">@color/app_primary_color</item>
+        <item name="colorPrimaryVariant">@color/app_primary_color</item>
+        <item name="colorOnPrimary">@color/white_ffffff</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/app_secondary_color</item>
+        <item name="colorSecondaryVariant">@color/app_secondary_color</item>
+        <item name="colorOnSecondary">@color/app_secondary_color</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <!-- windowBackground. -->
+        <item name="android:windowBackground">@color/app_background_color</item>
+    </style>
+</resources>

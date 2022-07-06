@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="common_network_disconnected_try_again">네트워크 연결이 원활하지 않습니다.\n잠시 후 다시 시도해주세요.</string>
+    <string name="common_server_request_error">서버 통신중 오류가 발생하였습니다.</string>
+
+    <string name="permission_rationale_title">앱 접근 권한 안내</string>
+    <string name="permission_require_message">앱을 이용하기 위해서는 접근 권한이 필요합니다</string>
+    <string name="permission_denied_message">앱에서 요구하는 권한설정이 필요합니다.\n[설정] > [권한] 에서 사용으로 활성화해주세요.</string>
+</resources>

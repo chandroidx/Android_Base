@@ -1,0 +1,102 @@
+name: Base_Android CI
+
+on:
+  push:
+    branches: [ dev_release ] 
+
+defaults:
+  run:
+    shell: bash
+    working-directory: .
+
+jobs:
+  build:
+    name: Generate APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+     
+      - name: Gradle cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      
+      - name: set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+        
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+        
+      - name: Build APK
+        run: ./gradlew assembleDevRelease
+        
+      - name: On Failed, Notify in Slack
+        if: ${{ failure() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: /////////////TODO//////////////
+          SLACK_TITLE: 'Anroid_Base dev-release build failed❌'
+          SLACK_COLOR: '#FF5733'
+          MSG_MINIMAL: true
+          SLACK_MESSAGE: 'Android_Base APK 생성 실패'
+          
+      - name: Upload APK
+        if: ${{ success() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: apk
+          path: app/build/outputs/apk/dev/release/
+          
+  upload:
+    needs: [build]
+    name: upload to Slack
+    runs-on: ubuntu-latest
+    steps:
+      - name: download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: apk
+          
+      - name: Update Release apk name
+        if: ${{ success() }}
+        run: |
+          echo 'apk=app-dev-release.apk' >> $GITHUB_ENV
+      
+      - name: Upload APK at Slack
+        if: ${{ success() }}
+        run: |
+          curl -X POST \
+          -F file=@$apk \
+          -F channels=/////////////TODO////////////// \
+          -H "Authorization: Bearer /////////////TODO//////////////" \
+          https://slack.com/api/files.upload
+          
+      - name: On success
+        if: ${{ success() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: /////////////TODO//////////////
+          SLACK_TITLE: 'Anroid_Base dev-release build Success✅'
+          SLACK_COLOR: '#5BFF33'
+          MSG_MINIMAL: true
+          SLACK_MESSAGE: 'Android_Base APK 생성 완료'
+          
+      - name: On Success but fail
+        if: ${{ failure() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: /////////////TODO//////////////
+          SLACK_TITLE: 'Anroid_Base dev-release build Success✅'
+          SLACK_COLOR: '#5BFF33'
+          MSG_MINIMAL: true
+          SLACK_MESSAGE: 'Android_Base APK 업로드 실패'
